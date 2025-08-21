@@ -63,6 +63,5 @@ def update_item(id, item_update):
         raise e("Item was not found")
 
 def save_db(data):
-    data.sort()
     with open(get_file_dir(), 'w') as f:
         json.dump(data, f, indent=4)
