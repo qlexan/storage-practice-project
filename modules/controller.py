@@ -1,6 +1,6 @@
 import time
-import storage
-from classlib import Item
+from . import storage
+from .classlib import Item
 from CLI import *
 import sys
 
