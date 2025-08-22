@@ -33,6 +33,18 @@ class Slot():
             return False
         else:
             self.id = item_id
+            
+            
+class Shelf:
+    def __init__(self, slot: Slot, shelf_name):
+        self.shelf_name = shelf_name
+        self.slot = slot
+        
+        
+    def shelf_create(self):
+        return {self.shelf_name: {self.slot}}
+        
+    
     
     
         
