@@ -1,7 +1,6 @@
 
-from controller import Controller 
-import storage
-
+from modules.controller import Controller
+import modules.storage as storage
 def main():
     cont = Controller()
     storage.setup()

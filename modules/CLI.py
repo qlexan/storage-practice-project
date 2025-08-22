@@ -12,7 +12,7 @@ def cli_add():
     stock = int(input("Enter product stock: "))
     supplier = str(input("Enter product supplier: "))
     print('\n ---------- \n')
-    return Item(name, stock, supplier)
+    return Item(name, supplier)
 
 def cli_id():
     clear()
