@@ -26,6 +26,10 @@ def add_item_json(item):
 def get_db():
     with open(DB_PATH, 'r') as f:
         return json.load(f)
+    
+def get_shelf():
+    with open(SHELF_PATH, 'r') as f:
+        return json.load(f)
 
 
 def delete_item(id):
