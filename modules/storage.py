@@ -22,3 +22,7 @@ def get_shelf():
 def save_db(data):
     with open(DB_PATH, 'w') as f:
         json.dump(data, f, indent=4)
+        
+def save_shelf(data):
+    with open(SHELF_PATH, 'w') as f:
+        json.dump(data, f, indent=4)
