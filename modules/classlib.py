@@ -2,6 +2,7 @@ import os
 import json
 import storage
 
+
 class Item():
 
     def __init__(self, name: str, supplier: str, id: int = None):
@@ -10,56 +11,54 @@ class Item():
         self.supplier = supplier
 
     def to_dict(self):
-        return {self.id :{
+        return {self.id: {
                 "name": self.name,
                 "supplier": self.supplier}}
 
 
 class Slot():
-    def __init__(self, id: int, stock: int, shelf):
+    def __init__(self, id: int, stock: int, shelf: str, number: int):
         self.id = id
         self.shelf = shelf
         self.stock = stock
-        self.slot = self.shelf + self.shelf_calc()
-        
-    def to_slot(self):
-        
-        return {self.slot : {
-            self.id,
-            self.stock
-        }}
-        
-        
+        self.slot = f"{shelf}{number}"
+
+    def to_dict(self):
+        return {self.slot: {
+                    "id": self.id,
+                    "stock": self.stock }
+                }
+
     def assign_item(self, item_id):
         db = storage.get_db()
         if item_id not in db:
             return False
         else:
             self.id = item_id
-    
-    def append_slot(self):
-        shelf = storage.get_shelf()
-        slot_char = self.slot[0]
-        if shelf != slot_char:
-            return f"No shelf matches {slot_char}"
-        else:
-            shelf[slot_char].update(self.slot)
-             
-    
-            
+
+    def belongs_to_shelf(self, shelf_name: str) -> bool:
+        return self.slot[0] == shelf_name
+
+    def __repr__(self):
+        return f"<Slot {self.slot}: id= {self.id}, stock={self.stock}>"
+
+
 class Shelf:
-    def __init__(self, slot: Slot, shelf_name):
+    def __init__(self, shelf_name: str, slot: Slot):
         self.shelf_name = shelf_name
-        self.slot = slot
-        
-        
-    def shelf_create(self):
-        return {self.shelf_name: {self.slot}}
-        
-    def shelf_calc(self):
-        length = len(storage.get_shelf())
-        return length + 1 if length > 0 else 1
-    
-    
+        self.slots = {} 
 
+    def to_dict(self):
+        return {self.shelf_name: self.slots}
 
+    def add_slot(self, slot: Slot):
+        if not slot.belongs_to_shelf(self.shelf_name):
+            raise ValueError(
+                f"Slot {slot.slot} does not belong to shelf {self.shelf_name}")
+        self.slots[slot.slot] = slot
+
+    def get_slot(self, slot_name: str) -> Slot | None:
+        return self.slots.get(slot_name)
+
+    def __repr__(self):
+        return f"<Shelf {self.shelf_name} with {len(self.slots)} slots>"
