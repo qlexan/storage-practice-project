@@ -30,7 +30,8 @@ class Slot():
         
         
     def assign_item(self, item_id):
-        if item_id != self.id:
+        db = storage.get_db()
+        if item_id not in db:
             return False
         else:
             self.id = item_id
