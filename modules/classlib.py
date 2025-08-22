@@ -16,12 +16,13 @@ class Item():
 
 
 class Slot():
-    def __init__(self, id: int, stock: int):
+    def __init__(self, id: int, stock: int, shelf):
         self.id = id
+        self.shelf = shelf
         self.stock = stock
         
     def to_slot(self):
-        slot = assigned_shelf + shelf_calc()
+        slot = self.shelf + self.shelf_calc()
         return {slot : {
             self.id,
             self.stock
@@ -44,7 +45,9 @@ class Shelf:
     def shelf_create(self):
         return {self.shelf_name: {self.slot}}
         
-    
+    def shelf_calc(self):
+        length = len(storage.get_shelf())
+        return length + 1 if length > 0 else 1
     
     
         
