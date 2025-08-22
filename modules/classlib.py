@@ -20,10 +20,11 @@ class Slot():
         self.id = id
         self.shelf = shelf
         self.stock = stock
+        self.slot = self.shelf + self.shelf_calc()
         
     def to_slot(self):
-        slot = self.shelf + self.shelf_calc()
-        return {slot : {
+        
+        return {self.slot : {
             self.id,
             self.stock
         }}
@@ -35,7 +36,16 @@ class Slot():
             return False
         else:
             self.id = item_id
-            
+    
+    def append_slot(self):
+        shelf = storage.get_shelf()
+        slot_char = self.slot[0]
+        if shelf != slot_char:
+            return f"No shelf matches {slot_char}"
+        else:
+            shelf[slot_char].update(self.slot)
+             
+    
             
 class Shelf:
     def __init__(self, slot: Slot, shelf_name):
@@ -51,7 +61,5 @@ class Shelf:
         return length + 1 if length > 0 else 1
     
     
-        
-        
 
 
