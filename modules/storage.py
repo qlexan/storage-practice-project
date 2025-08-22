@@ -1,14 +1,16 @@
 import os
 import json
 from classlib import Item
-from .config import DB_PATH
+from .config import DB_PATH, SHELF_PATH
 
 
 def setup():
-    # Create the file if it doesn't exist or is empty
     if not os.path.exists(DB_PATH) or os.path.getsize(DB_PATH) == 0:
         with open(DB_PATH, "w") as f:
-            json.dump({}, f)  # Correct: object first, file 
+            json.dump({}, f)
+    if not os.path.exists(SHELF_PATH) or os.path.getsize(SHELF_PATH) == 0:
+        with open(SHELF_PATH, "w") as f:
+            json.dump({}, f)
 
 
 def add_item_json(item):
