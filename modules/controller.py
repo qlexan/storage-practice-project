@@ -1,6 +1,6 @@
 import time
 from . import storage
-from .classlib import Item
+from .classlib import Item, Slot, Shelf
 from CLI import *
 import sys
 
@@ -9,7 +9,21 @@ class Controller:
 
     def __init__(self):
         pass
-
+    
+    def shelf_create(self,shelf: Shelf):
+        db = storage.get_shelf()
+        if shelf.shelf_name not in db:
+            db.update(shelf.to_dict())
+            storage.save_shelf(db)
+        else:
+            return f"Shelf with name: {shelf.shelf_name} already exists"
+    
+    def shelf_add_slot(self, slot: Slot, shelf: Shelf, id):
+        db = storage.get_shelf()
+        if slot.assign_item(id):
+            if
+    
+    
     def delete_item(self):
         try:
             id = cli_id()
@@ -66,9 +80,9 @@ class Controller:
         print("Goodbye")
         sys.exit()
         
-    def show_menu(self):
+    def show_main(self):
         while True:
-            choice = cli_menu()
+            choice = cli_main()
             commands = self.get_commands()
             action = commands.get(choice)
             if action:

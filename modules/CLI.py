@@ -40,7 +40,7 @@ def cli_login():
     password = str(input("Please enter password: "))
     return username, password
     
-def cli_menu():
+def cli_main():
     clear()
     print('\n ---------- \n')
     print("1. Add Item")

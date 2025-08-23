@@ -25,9 +25,18 @@ class Slot():
 
     def to_dict(self):
         return {self.slot: {
-                    "id": self.id,
-                    "stock": self.stock }
-                }
+            "id": self.id,
+            "stock": self.stock}
+        }
+    @classmethod
+    def from_dict(cls, shelf, slot_dict):
+        slot_name, slot_data = next(iter(slot_dict.items()))
+        return cls(
+            id=slot_data["id"],
+            stock=slot_data["stock"],
+            slot=slot_name,
+            shelf=str(shelf)
+        )
 
     def assign_item(self, item_id):
         db = storage.get_db()
@@ -35,6 +44,7 @@ class Slot():
             return False
         else:
             self.id = item_id
+            return True
 
     def belongs_to_shelf(self, shelf_name: str) -> bool:
         return self.slot[0] == shelf_name
@@ -46,10 +56,21 @@ class Slot():
 class Shelf:
     def __init__(self, shelf_name: str, slot: Slot):
         self.shelf_name = shelf_name
-        self.slots = {} 
+        self.slots = {}
 
     def to_dict(self):
         return {self.shelf_name: self.slots}
+
+    @classmethod
+    def from_dict(cls, shelf_dict, shelf_name):
+        shelf = cls(shelf_name)
+        
+        for slot_name, slot_data in shelf_dict[shelf_name].items():
+            slot_dict = {slot_name : slot_data}
+            slot_obj = Slot.from_dict(slot_dict, shelf_name)
+            shelf.slots[slot_name] = slot_obj
+
+        return shelf
 
     def add_slot(self, slot: Slot):
         if not slot.belongs_to_shelf(self.shelf_name):
