@@ -1,7 +1,7 @@
 import time
 from . import storage
 from .classlib import Item, Slot, Shelf
-from CLI import *
+from . import CLI
 import sys
 
 
@@ -21,12 +21,12 @@ class Controller:
     def shelf_add_slot(self, slot: Slot, shelf: Shelf, id):
         db = storage.get_shelf()
         if slot.assign_item(id):
-            if
+            ...
     
     
     def delete_item(self):
         try:
-            id = cli_id()
+            id = CLI.cli_id()
             db = storage.get_db()
             if str(id) not in db:
                 raise Exception(f"{id} not found")
@@ -37,7 +37,7 @@ class Controller:
             raise Exception("Item was not found")
 
     def add_item(self):
-        item_added = cli_add()
+        item_added = CLI.cli_add()
         db = storage.get_db()
         db_len = len(db)
         new_id = db_len + 1 if db_len > 0 else 1
@@ -48,12 +48,12 @@ class Controller:
 
     def update_item(self):
         try:
-            id = cli_id()
+            id = CLI.cli_id()
             db = storage.get_db()
 
             db.pop(str(id))
 
-            item_update = cli_add()
+            item_update = CLI.cli_add()
             item_update.id = id
             db[id] = item_update.to_dict()
 
@@ -65,16 +65,16 @@ class Controller:
     def show_all_items(self):
         db = storage.get_db()
         for item in db.values():
-            cli_show(item)
+            CLI.cli_show(item)
 
     def show_item(self):
-        id = cli_id()
+        id = CLI.cli_id()
         data = storage.get_db()
         if str(id) not in data:
             print(f"{id} does not exist")
             return
         item = data[str(id)]
-        cli_show(item)
+        CLI.cli_show(item)
 
     def quit_out(self):
         print("Goodbye")
@@ -82,14 +82,14 @@ class Controller:
         
     def show_main(self):
         while True:
-            choice = cli_main()
+            choice = CLI.cli_main()
             commands = self.get_commands()
             action = commands.get(choice)
             if action:
                 try:
                     action()
                 except Exception as e:
-                    cli_error(e)
+                    CLI.cli_error(e)
             
             input("\nPress enter to continue...")
 

@@ -1,4 +1,4 @@
 from .classlib import Item
-from . import storage
-from . import CLI
-from . import controller
+from modules import storage
+from modules import CLI
+from modules import controller

@@ -1,6 +1,6 @@
 import os
 import json
-import storage
+from . import storage
 
 
 class Item():

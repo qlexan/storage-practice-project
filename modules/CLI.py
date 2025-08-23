@@ -1,4 +1,4 @@
-from classlib import *
+from . import Item
 import os 
 import time
 

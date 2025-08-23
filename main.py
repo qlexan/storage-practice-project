@@ -4,7 +4,7 @@ import modules.storage as storage
 def main():
     cont = Controller()
     storage.setup()
-    cont.show_menu()
+    cont.show_main()
 
 if __name__ == "__main__":
     main()
