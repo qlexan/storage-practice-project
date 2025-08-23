@@ -83,7 +83,7 @@ class Controller:
     def show_main(self):
         while True:
             choice = CLI.cli_main()
-            commands = self.get_commands()
+            commands = self.main_menu_options()
             action = commands.get(choice)
             if action:
                 try:
@@ -93,7 +93,7 @@ class Controller:
             
             input("\nPress enter to continue...")
 
-    def get_commands(self):
+    def main_menu_options(self):
         return {
             1: self.add_item,
             2: self.delete_item,
