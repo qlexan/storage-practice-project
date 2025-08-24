@@ -65,42 +65,38 @@ class Controller:
 
     def add_item(self):
         item_added = CLI.cli_add()
-        db = storage.get_db()
-        db_len = len(db)
+        db_len = len(self.db)
         new_id = db_len + 1 if db_len > 0 else 1
         item_added.id = new_id
         self.db.update(item_added.to_dict())
-        storage.save_db(db)
+        storage.save_db(self.db)
         return item_added
 
     def update_item(self):
         try:
             id = CLI.cli_id()
-            db = storage.get_db()
 
-            db.pop(str(id))
+            self.db.pop(str(id))
 
             item_update = CLI.cli_add()
             item_update.id = id
-            db[id] = item_update.to_dict()
+            self.db[id] = item_update.to_dict()
 
-            storage.save_db(db)
+            storage.save_db(self.db)
             return f"Item with ID '{id}' was successfully updated."
         except Exception:
             raise Exception("Item was not found")
 
     def show_all_items(self):
-        db = storage.get_db()
-        for item in db.values():
+        for item in self.db.values():
             CLI.cli_show(item)
 
     def show_item(self):
         id = CLI.cli_id()
-        data = storage.get_db()
-        if str(id) not in data:
+        if str(id) not in self.db:
             print(f"{id} does not exist")
             return
-        item = data[str(id)]
+        item = self.db[str(id)]
         CLI.cli_show(item)
 
     def quit_out(self):
