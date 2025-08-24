@@ -72,6 +72,7 @@ def cli_main():
     print("4. Show Item")
     print("5. Show all items")
     print("6. Show shelves")
+    print("7. Create shelf")
     print("0. Exit")
     print('\n ---------- \n')
     try:
