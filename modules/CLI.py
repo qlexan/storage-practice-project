@@ -20,10 +20,8 @@ def cli_slot():
     print('\n ---------- \n')
     id = int(input("Enter item id: "))
     stock = int(input("Enter product stock: "))
-    name = str(input("Enter shelf: ").strip().capitalize())
-    number = str(input("Enter slot number: "))
     print('\n ---------- \n')
-    return Slot(stock=stock, shelf=name, number=number, id=id)
+    return stock, id
 
 def cli_slot_choice():
     clear()
@@ -35,7 +33,7 @@ def cli_shelf():
     clear()
     print('\n ---------- \n')
     shelf_name = str(input("Enter shelf name: "))
-    return Shelf(shelf_name=shelf_name)
+    return shelf_name
 
 def cli_id():
     clear()
@@ -45,8 +43,6 @@ def cli_id():
     return id
 
 def cli_show(item):
-    clear()
-    print("Product")
     print('\n ---------- \n')
     if not item: 
         print("(empty item)")
