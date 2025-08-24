@@ -37,12 +37,13 @@ class Controller:
     
     def shelf_add_slot(self, shelf: Shelf):
         shelves = self.shelf_db
-        slot = CLI.cli_slot()  
-        
+        stock, id = CLI.cli_slot()  
+        slot = Slot(stock=stock, id=id)
         if not slot.assign_item(slot.id):
             print(f"Item with id {slot.id} does not exist")
             return
-        
+        length = len(shelves.get(shelf.shelf_name, {})) + 1
+        slot.slot = f"{shelf.shelf_name}{length}"
         shelf.add_slot(slot)
         
         shelves.update(shelf.to_dict())

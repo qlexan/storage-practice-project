@@ -18,11 +18,11 @@ class Item():
 
 
 class Slot():
-    def __init__(self, stock: int, shelf: str, number: int, id: Optional[int] = None):
+    def __init__(self, stock: int, id: Optional[int] = None):
         self.id = id
-        self.shelf = shelf
+        self.shelf = None
         self.stock = stock
-        self.slot = f"{shelf}{number}"
+        self.slot = None
 
     def to_dict(self):
         return {self.slot: {
@@ -30,18 +30,14 @@ class Slot():
             "stock": self.stock}
         }
     @classmethod
-    def from_dict(cls, shelf, slot_dict):
+    def from_dict(cls, slot_dict):
         slot_name, slot_data = next(iter(slot_dict.items()))
-        return cls(
-            id=slot_data["id"],
-            stock=slot_data["stock"],
-            slot=slot_name,
-            shelf=str(shelf)
-        )
-
+        slot = cls(stock=slot_data["stock"], id=slot_data["id"])
+        slot.slot = slot_name
+        
     def assign_item(self, item_id):
         db = storage.get_db()
-        if item_id not in db:
+        if str(item_id) not in db:
             return False
         else:
             self.id = item_id
@@ -77,7 +73,8 @@ class Shelf:
         if not slot.belongs_to_shelf(self.shelf_name):
             raise ValueError(
                 f"Slot {slot.slot} does not belong to shelf {self.shelf_name}")
-        self.slots[slot.slot] = slot.to_dict()
+        self.slots[slot.slot] = {"id": slot.id,
+                                 "stock": slot.stock}
 
     def get_slot(self, slot_name: str) -> Slot | None:
         return self.slots.get(slot_name)
