@@ -19,23 +19,24 @@ class Controller:
         return storage.get_shelf()
         
     def shelf_create(self):
+        shelves = self.shelf_db
         shelf_name = CLI.cli_shelf()  
-        if shelf_name in self.shelf_db:
+        if shelf_name in shelves:
             print(f"Shelf with name: {shelf_name} already exists")
             return
         
-        shelf = Shelf(shelf_name, slot=None)
+        shelf = Shelf(shelf_name)
         slot_choice = CLI.cli_slot_choice()  # 'y' or 'n'
         if slot_choice.lower() == 'y':
             self.shelf_add_slot(shelf)
         
 
-        self.shelf_db.update(shelf.to_dict())
+        shelves.update(shelf.to_dict())
         storage.save_shelf(self.shelf_db)
         print(f"Shelf '{shelf_name}' created successfully")
     
     def shelf_add_slot(self, shelf: Shelf):
-
+        shelves = self.shelf_db
         slot = CLI.cli_slot()  
         
         if not slot.assign_item(slot.id):
@@ -44,45 +45,50 @@ class Controller:
         
         shelf.add_slot(slot)
         
-        self.shelf_db.update(shelf.to_dict())
-        storage.save_shelf(self.shelf_db)
+        shelves.update(shelf.to_dict())
+        storage.save_shelf(shelves)
         
         print(f"Slot '{slot.slot}' added to shelf '{shelf.shelf_name}' successfully")
 
             
-    
+    def show_shelves(self):
+        for shelves in self.shelf_db.values():
+            CLI.cli_show(shelves)
     
     def delete_item(self):
         try:
             id = CLI.cli_id()
-            if str(id) not in self.db:
+            db = self.db
+            if str(id) not in db:
                 raise Exception(f"{self.id} not found")
-            self.db.pop(str(id))
-            storage.save_db(self.db)
+            db.pop(str(id))
+            storage.save_db(db)
             print(f"item with id: '{id}' was succesfully removed")
         except:
             raise Exception("Item was not found")
 
     def add_item(self):
         item_added = CLI.cli_add()
+        db = self.db
         db_len = len(self.db)
         new_id = db_len + 1 if db_len > 0 else 1
         item_added.id = new_id
-        self.db.update(item_added.to_dict())
-        storage.save_db(self.db)
+        db.update(item_added.to_dict())
+        storage.save_db(db)
         return item_added
 
     def update_item(self):
         try:
+            db = self.db
             id = CLI.cli_id()
 
-            self.db.pop(str(id))
+            db.pop(str(id))
 
             item_update = CLI.cli_add()
             item_update.id = id
-            self.db[id] = item_update.to_dict()
+            db[id] = item_update.to_dict()
 
-            storage.save_db(self.db)
+            storage.save_db(db)
             return f"Item with ID '{id}' was successfully updated."
         except Exception:
             raise Exception("Item was not found")
