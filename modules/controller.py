@@ -53,8 +53,10 @@ class Controller:
 
             
     def show_shelves(self):
-        for shelves in self.shelf_db.values():
-            CLI.cli_show(shelves)
+        for shelves in self.shelf_db.keys():
+            print(f" Shelf: {shelves}")
+            for slots in self.shelf_db.values():
+                CLI.cli_show(slots)
     
     def delete_item(self):
         try:
@@ -130,5 +132,7 @@ class Controller:
             3: self.update_item,
             4: self.show_item,
             5: self.show_all_items,
+            6: self.show_shelves,
+            7: self.shelf_create,
             0: self.quit_out
         }
