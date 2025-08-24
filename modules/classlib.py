@@ -1,6 +1,7 @@
 import os
 import json
 from . import storage
+from typing import Optional
 
 
 class Item():
@@ -17,7 +18,7 @@ class Item():
 
 
 class Slot():
-    def __init__(self, id: int, stock: int, shelf: str, number: int):
+    def __init__(self, stock: int, shelf: str, number: int, id: Optional[int] = None):
         self.id = id
         self.shelf = shelf
         self.stock = stock
@@ -54,7 +55,7 @@ class Slot():
 
 
 class Shelf:
-    def __init__(self, shelf_name: str, slot: Slot):
+    def __init__(self, shelf_name: str):
         self.shelf_name = shelf_name
         self.slots = {}
 
@@ -76,7 +77,7 @@ class Shelf:
         if not slot.belongs_to_shelf(self.shelf_name):
             raise ValueError(
                 f"Slot {slot.slot} does not belong to shelf {self.shelf_name}")
-        self.slots[slot.slot] = slot
+        self.slots[slot.slot] = slot.to_dict()
 
     def get_slot(self, slot_name: str) -> Slot | None:
         return self.slots.get(slot_name)

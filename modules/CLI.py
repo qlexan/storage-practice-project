@@ -1,4 +1,5 @@
 from . import Item
+from .classlib import Slot, Shelf
 import os 
 import time
 
@@ -13,6 +14,28 @@ def cli_add():
     supplier = str(input("Enter product supplier: "))
     print('\n ---------- \n')
     return Item(name, supplier)
+
+def cli_slot():
+    clear()
+    print('\n ---------- \n')
+    id = int(input("Enter item id: "))
+    stock = int(input("Enter product stock: "))
+    name = str(input("Enter shelf: ").strip().capitalize())
+    number = str(input("Enter slot number: "))
+    print('\n ---------- \n')
+    return Slot(stock=stock, shelf=name, number=number, id=id)
+
+def cli_slot_choice():
+    clear()
+    print('\n ---------- \n')
+    return str(input("Would you like to add a slot? (y/n): ").strip().lower())
+    
+
+def cli_shelf():
+    clear()
+    print('\n ---------- \n')
+    shelf_name = str(input("Enter shelf name: "))
+    return Shelf(shelf_name=shelf_name)
 
 def cli_id():
     clear()
@@ -48,6 +71,7 @@ def cli_main():
     print("3. Update Item")
     print("4. Show Item")
     print("5. Show all items")
+    print("6. Show shelves")
     print("0. Exit")
     print('\n ---------- \n')
     try:
