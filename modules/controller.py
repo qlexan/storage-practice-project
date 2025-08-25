@@ -42,7 +42,7 @@ class Controller:
         if not slot.assign_item(slot.id):
             return
         length = len(shelves.get(shelf.shelf_name, {})) + 1
-        slot.slot_name = f"{shelf.shelf_name}{length}"
+        slot.slot_name = shelf.shelf_name + str(length)
         shelf.add_slot(slot)
         
         shelves.update(shelf.to_dict())
@@ -50,7 +50,20 @@ class Controller:
         
         print(f"Slot '{slot.slot_name}' added to shelf '{shelf.shelf_name}' successfully")
 
-            
+        
+    def show_shelf(self):
+        input = CLI.cli_show_shelf()
+        shelf = self.shelf_db[input]
+        if  shelf:
+            print(f"Shelf: {input}") 
+            for slots in shelf.values():
+                CLI.cli_show(slots)
+                
+            choice = CLI.cli_slot_choice()
+            if choice == 'y':
+                shelf = Shelf.from_dict({input: shelf}, input )
+                self.shelf_add_slot(shelf)
+                
     def show_shelves(self):
         for shelves in self.shelf_db.keys():
             print(f" Shelf: {shelves}")
@@ -92,8 +105,8 @@ class Controller:
 
             storage.save_db(db)
             return f"Item with ID '{id}' was successfully updated."
-        except Exception:
-            raise Exception("Item was not found")
+        except Exception as e:
+            print(f"{e}")
 
     def show_all_items(self):
         for item in self.db.values():
@@ -133,5 +146,6 @@ class Controller:
             5: self.show_all_items,
             6: self.show_shelves,
             7: self.shelf_create,
+            8: self.show_shelf,
             0: self.quit_out
         }
