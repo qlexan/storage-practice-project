@@ -40,16 +40,15 @@ class Controller:
         stock, id = CLI.cli_slot()  
         slot = Slot(stock=stock, id=id)
         if not slot.assign_item(slot.id):
-            print(f"Item with id {slot.id} does not exist")
             return
         length = len(shelves.get(shelf.shelf_name, {})) + 1
-        slot.slot = f"{shelf.shelf_name}{length}"
+        slot.slot_name = f"{shelf.shelf_name}{length}"
         shelf.add_slot(slot)
         
         shelves.update(shelf.to_dict())
         storage.save_shelf(shelves)
         
-        print(f"Slot '{slot.slot}' added to shelf '{shelf.shelf_name}' successfully")
+        print(f"Slot '{slot.slot_name}' added to shelf '{shelf.shelf_name}' successfully")
 
             
     def show_shelves(self):
