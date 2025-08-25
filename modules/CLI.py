@@ -24,7 +24,6 @@ def cli_slot():
     return stock, id
 
 def cli_slot_choice():
-    clear()
     print('\n ---------- \n')
     return str(input("Would you like to add a slot? (y/n): ").strip().lower())
     
@@ -51,7 +50,11 @@ def cli_show(item):
     time.sleep(2)
     print('\n ---------- \n')
     
-    
+def cli_show_shelf():
+    print('\n ---------- \n')   
+    choice = str(input("Enter which shelf you want to view: ").upper().strip())
+    return choice
+        
 def cli_login():
     clear()
     print('\n ---------- \n')
