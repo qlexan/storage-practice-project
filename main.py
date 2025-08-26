@@ -1,10 +1,11 @@
+from core.fsm.fsm import StateMachine
+import utils.storage as storage
+from core.fsm.registry import registry
 
-from modules.controller import Controller
-import modules.storage as storage
+
 def main():
-    cont = Controller()
     storage.setup()
-    cont.show_main()
-
+    fsm = StateMachine(registry["Dashboard"])
+    fsm.state.on_enter()
 if __name__ == "__main__":
     main()

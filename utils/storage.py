@@ -1,6 +1,6 @@
 import os
 import json
-from .config import DB_PATH, SHELF_PATH
+from config.env import DB_PATH, SHELF_PATH
 
 
 def setup():

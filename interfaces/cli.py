@@ -1,5 +1,5 @@
-from . import Item
-from .classlib import Slot, Shelf
+
+from modules.inventory.inventory import Item, Slot, Shelf
 import os 
 import time
 
