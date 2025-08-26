@@ -6,7 +6,7 @@ class StateMachine:
     
     def __init__(self, current_state: State):
         self.state = current_state
-        
+        self.state.on_enter(self)
     
     def trigger(self, target_name: str):
         
@@ -17,6 +17,6 @@ class StateMachine:
             if action:
                 action()
             self.state = registry[target_name]
-            self.state.on_enter()
+            self.state.on_enter(self)
         else:
             print(f"Cannot go from {self.state.name} to {target_name}")

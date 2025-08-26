@@ -1,5 +1,6 @@
 
 from .transitions import *
+from interfaces.cli import *
 
 class State:
 
@@ -38,10 +39,12 @@ class Dashboard(State):
     def items(self):
         print("Entering Items from Dashboard")
         
-    def on_enter(self):
+    def on_enter(self, fsm=None):
         print("In Dashboard")
+        if fsm is not None:    
+            state = cli_main()
+            fsm.trigger(state)
         
-    
     def on_exit(self):...
 
 class Inventory(State):
@@ -50,7 +53,7 @@ class Inventory(State):
     def __init__(self):
         super().__init__("Inventory")
         
-    def on_enter(self):
+    def on_enter(self, fsm=None):
         print("In Inventory")
         
     
@@ -62,7 +65,7 @@ class Shelves(State):
     def __init__(self):
         super().__init__("Shelves")
         
-    def on_enter(self):
+    def on_enter(self, fsm=None):
         print("In Shelves")
         
     
@@ -74,7 +77,7 @@ class Slots(State):
     def __init__(self):
         super().__init__("Slots")
         
-    def on_enter(self):
+    def on_enter(self, fsm=None):
         print("In Slots")
         
     
@@ -87,7 +90,7 @@ class Items(State):
     def __init__(self):
         super().__init__("Items")
         
-    def on_enter(self):
+    def on_enter(self, fsm=None):
         print("In Items")
         
     

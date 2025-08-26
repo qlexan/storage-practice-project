@@ -2,6 +2,7 @@
 from modules.inventory.inventory import Item, Slot, Shelf
 import os 
 import time
+import sys
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -64,18 +65,22 @@ def cli_login():
     
 def cli_main():
     clear()
+    choices = {
+        1: "Inventory",
+        2: "Shelves",
+        3: "Slots",
+        4: "Items",
+    }
     print('\n ---------- \n')
-    print("1. Add Item")
-    print("2. Delete Item")
-    print("3. Update Item")
-    print("4. Show Item")
-    print("5. Show all items")
-    print("6. Show shelves")
-    print("7. Create shelf")
+    for k, v in choices.items():
+        print(f"{k}. {v}")
     print("0. Exit")
     print('\n ---------- \n')
+    
     try:
-        return int(input("Select an option: "))
+        num = int(input("Select an option: "))
+        state = choices[num]
+        return state
     except ValueError:
         print("Invalid input")
     except KeyboardInterrupt:
