@@ -1,28 +1,11 @@
-import os
-import json
-from config.env import DB_PATH, SHELF_PATH
+from sqlmodel import create_engine, Session
+from config.env import DB_URL, SHELF_PATH
 
 
-def setup():
-    if not os.path.exists(DB_PATH) or os.path.getsize(DB_PATH) == 0:
-        with open(DB_PATH, "w") as f:
-            json.dump({}, f)
-    if not os.path.exists(SHELF_PATH) or os.path.getsize(SHELF_PATH) == 0:
-        with open(SHELF_PATH, "w") as f:
-            json.dump({}, f)
 
-def get_db():
-    with open(DB_PATH, 'r') as f:
-        return json.load(f)
+engine = create_engine(DB_URL)
+
+def new_session() -> Session:
+    return Session(engine)
     
-def get_shelf():
-    with open(SHELF_PATH, 'r') as f:
-        return json.load(f)
 
-def save_db(data):
-    with open(DB_PATH, 'w') as f:
-        json.dump(data, f, indent=4)
-        
-def save_shelf(data):
-    with open(SHELF_PATH, 'w') as f:
-        json.dump(data, f, indent=4)

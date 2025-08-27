@@ -1,78 +1,69 @@
-from utils import storage
-from .inventory import Item, Slot, Shelf
-from interfaces.cli import *
+from utils.storage import new_session
+from .schemas import Item, Slot, Shelf, SlotItem
+from sqlmodel import select
 
 
 class InventoryController:
     
-    @property
-    def db(self):
-        return storage.get_db()
-    
-    @property
-    def shelf_db(self):
-        return storage.get_shelf()
-    
     """Item functions"""
     
     def delete_item(self, id: int):
-        try:
-            db = self.db
-            if str(id) not in db:
-                raise Exception(f"{self.id} not found")
-            db.pop(str(id))
-            storage.save_db(db)
-            print(f"item with id: '{id}' was succesfully removed")
-        except:
-            raise Exception("Item was not found")
+     
+            with new_session() as session:
+                item = session.get(Item, id)
+                if item is None:
+                    raise ValueError("Item doesnt exist")
+                session.delete(item)
+                session.commit()
+        
 
     def add_item(self, item_added: Item):
-        db = self.db
-        new_id = len(db) + 1
-        item_added.id = new_id
-        db.update(item_added.to_dict())
-        storage.save_db(db)
-        return item_added
+        with new_session() as session:
+            session.add(item_added)
+            session.commit()
+            
 
     def update_item(self, id: int, item_update: Item):
-        try:
-            db = self.db
 
-            db.pop(str(id))
-
-            
-            item_update.id = id
-            db[id] = item_update.to_dict()
-
-            storage.save_db(db)
-            return f"Item with ID '{id}' was successfully updated."
-        except Exception as e:
-            print(f"{e}")
+        with new_session() as session:
+            item = session.exec(select(Item).where(Item.id == id)).first()
+            if item is None:
+                raise ValueError(f"Item doesnt exist")
+            item.name = item_update.name
+            item.supplier = item_update.supplier
+            session.add(item)
+            session.commit()
+        
 
     def show_all_items(self):
-        for item in self.db.values():
-            return item
-
+        with new_session() as session:
+            items = session.get(Item)
+            for item in items:
+                return item
+            session.commit()
+            
     def show_item(self, id: int):
-        if str(id) not in self.db:
-            print(f"{id} does not exist")
-            return
-        item = self.db[str(id)]
-        return item
+        with new_session() as session:
+            item = session.get(Item, id)
+            session.commit()
+            return item
+        
+    def assign_slot(self, item_id: int, slot_id: int, stock: int):
+        with new_session() as session:
+            item = session.get(Item, item_id)
+            slot = session.get(Slot, slot_id)
+            if item is None:
+                raise ValueError("Item is none")
+            if slot is None: 
+                raise ValueError("Slot is none")
+            
+            slotitem = SlotItem(item_id=item.id, slot_id=slot.id, stock=stock)
+            session.add(slotitem)
+            session.commit()
+            
     
     """ Slot functions"""
-    def assign_item(self, item_id):
-        db = storage.get_db()
-        if str(item_id) not in db:
-            print(f"Item with id {item_id} does not exist")
-            return False
-        if len(db) == 0:
-            print("There are no items in the database")
-            return False
-        else:
-            self.id = item_id
-            self.item_name = db[str(item_id)]['name']
-            return True
+    
         
     def slot_belongs_to_shelf(self, slot: Slot, shelf_name: str) -> bool:
         if slot.slot_name is None:
@@ -81,57 +72,65 @@ class InventoryController:
     
     """ Shelf functions """
     
-    def shelf_create(self, shelf_name: str, slot_choice: str):
-        shelves = self.shelf_db  
-        if shelf_name in shelves:
-            print(f"Shelf with name: {shelf_name} already exists")
-            return
+    def shelf_create(self, shelf_name: str):
         
-        shelf = Shelf(shelf_name)
+        with new_session() as session:
+            shelf = Shelf(name=shelf_name)
+            session.add(shelf)
+            session.commit()
+            
+    def shelf_add_slot(self, shelf_id: int):
+        with new_session() as session:
+            shelf = session.get(Shelf, shelf_id)
+            if shelf is None:
+                raise ValueError("Shelf doesnt exist")
+            
+            slot_name = f"{shelf.name}{len(shelf.slots) + 1}"
+            slot = Slot(slot_name=slot_name, shelf=shelf)
+            shelf.slots.append(slot)
+            session.add(shelf)
+            session.commit()
         
-        shelves.update(shelf.to_dict())
-        storage.save_shelf(shelves)
-        return shelf
-    
-    def shelf_add_slot(self, shelf: Shelf, stock: int, id: int):
-        shelves = self.shelf_db
-        slot = Slot(stock=stock, id=id)
-        if not self.assign_item(slot.id):
-            return
-        length = len(shelves.get(shelf.shelf_name, {})) + 1
-        slot.slot_name = shelf.shelf_name + str(length)
-        self.add_slot(shelf, slot)
+    def show_shelf(self, shelf_id: int):
+        with new_session() as session:
+            shelf = session.get(Shelf, shelf_id)
+            session.commit()
+            return shelf
         
-        shelves.update(shelf.to_dict())
-        storage.save_shelf(shelves)
+            
+    def delete_shelf(self, shelf_id: int):
+        with new_session() as session:
+            shelf = session.get(Shelf, shelf_id)
+            if shelf is None:
+                raise ValueError("Shelf does not exist")
+            session.delete(shelf)
+            session.commit()
         
-        print(f"Slot '{slot.slot_name}' added to shelf '{shelf.shelf_name}' successfully")
-
-        
-    def show_shelf(self, input: str, choice: str):
-        shelf = self.shelf_db[input]
-        if  shelf:
-            print(f"Shelf: {input}") 
-            for slots in shelf.values():
-                return slots
-
+            
                 
                                 
     def show_shelves(self):
-        for shelves in self.shelf_db.keys():
-            print(f" Shelf: {shelves}")
-            for slots in self.shelf_db.values():
-                return slots
+        with new_session() as session:
+            shelves = session.get(Shelf)
+            for shelf in shelves:
+                return shelf
+            session.commit()
     
-    
-    
-    def add_slot(self, shelf: Shelf, new_slot: Slot):
-        if new_slot.slot_name is None:
-            raise ValueError("Slot must have a name before adding to shelf")
-        if not self.slot_belongs_to_shelf(new_slot, shelf.shelf_name):
-            raise ValueError(
-                f"Slot {new_slot.slot_name} does not belong to shelf {shelf.shelf_name}")
-        shelf.slots[new_slot.slot_name] = new_slot
         
-    def get_slot(self,shelf: Shelf, slot_name: str) -> Slot | None:
-        return shelf.slots.get(slot_name)
+    def delete_slot(self, slot_id: int):
+        with new_session() as session:
+            slot = session.get(Slot, slot_id)
+            if slot is None:
+                raise ValueError("Slot does not exist")
+            session.delete(slot)
+            session.commit()
+            
+            
+        
+    def get_slot(self, slot_id: int):
+        with new_session() as session:
+            slot = session.get(Slot, slot_id)
+            if slot is None:
+                raise ValueError("Slot does not exist")
+            session.commit()
+            return slot

@@ -12,13 +12,19 @@ class State:
     def __init__(self, name: str):
         self.name = name
         self.transitions: dict = {}
+
         
         for attr_name in dir(self):
             method = getattr(self, attr_name)
             if callable(method) and hasattr(method, "_transition_target"):
                 target = method._transition_target
                 self.transitions[target] = method
-        
+    
+    def on_enter(self):
+        raise NotImplementedError
+    
+    def on_exit(self):
+        raise NotImplementedError    
 
 class Dashboard(State):
     
