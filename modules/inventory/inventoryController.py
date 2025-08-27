@@ -34,13 +34,13 @@ class InventoryController:
         storage.save_db(db)
         return item_added
 
-    def update_item(self, id: int):
+    def update_item(self, id: int, item_update: Item):
         try:
             db = self.db
 
             db.pop(str(id))
 
-            item_update = cli_add()
+            
             item_update.id = id
             db[id] = item_update.to_dict()
 
@@ -51,14 +51,14 @@ class InventoryController:
 
     def show_all_items(self):
         for item in self.db.values():
-            cli_show(item)
+            return item
 
     def show_item(self, id: int):
         if str(id) not in self.db:
             print(f"{id} does not exist")
             return
         item = self.db[str(id)]
-        cli_show(item)
+        return item
     
     """ Slot functions"""
     def assign_item(self, item_id):
@@ -113,7 +113,7 @@ class InventoryController:
         if  shelf:
             print(f"Shelf: {input}") 
             for slots in shelf.values():
-                cli_show(slots)
+                return slots
 
                 
                                 
@@ -121,7 +121,7 @@ class InventoryController:
         for shelves in self.shelf_db.keys():
             print(f" Shelf: {shelves}")
             for slots in self.shelf_db.values():
-                cli_show(slots)
+                return slots
     
     
     
