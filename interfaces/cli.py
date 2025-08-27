@@ -1,5 +1,5 @@
 
-from modules.inventory.inventory import Item, Slot, Shelf
+from modules.inventory.schemas import Item, Shelf, Slot
 import os 
 import time
 import sys
@@ -11,18 +11,10 @@ def cli_add():
     clear()
     print('\n ---------- \n')
     name = str(input("Enter product name: "))
-    stock = int(input("Enter product stock: "))
     supplier = str(input("Enter product supplier: "))
     print('\n ---------- \n')
-    return Item(name, supplier)
+    return Item(name=name, supplier=supplier)
 
-def cli_slot():
-    clear()
-    print('\n ---------- \n')
-    id = int(input("Enter item id: "))
-    stock = int(input("Enter product stock: "))
-    print('\n ---------- \n')
-    return stock, id
 
 def cli_slot_choice():
     print('\n ---------- \n')
@@ -80,6 +72,8 @@ def cli_main():
     
     try:
         num = int(input("Select an option: "))
+        if num == 0:
+            sys.exit(0)
         state = choices[num]
         return state
     except ValueError:
