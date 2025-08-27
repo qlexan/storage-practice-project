@@ -20,7 +20,7 @@ class State:
                 target = method._transition_target
                 self.transitions[target] = method
     
-    def on_enter(self):
+    def on_enter(self, fsm=None):
         raise NotImplementedError
     
     def on_exit(self):
@@ -50,11 +50,52 @@ class Inventory(State):
         
     def on_enter(self, fsm=None):
         print("In Inventory")
+        
+        sub_states = {
+            1: self.add_item,
+            2: self.show_item,
+            3: self.show_all,
+            4: self.update_item,
+            5: self.delete_item,
+            6: self.add_to_slot,
+            7: lambda: fsm.trigger("Dashboard")
+        }
+        
         if fsm:
-            items = invcont.show_all_items()
-            cli_show(items)
-            fsm.trigger("Dashboard")
+            while True:
+                sub = cli_inventory()
+                action = sub_states.get(sub)
+                if action:
+                    action()
+                
+
+    def add_item(self):
+        item = cli_add()
+        invcont.add_item(item)
     
+    def show_item(self):
+        id = cli_id("item")
+        invcont.show_item(id)
+        
+    def show_all(self):
+        items = invcont.show_all_items()
+        cli_show(items)
+        
+    def update_item(self):
+        id = cli_id("item")
+        item = cli_add
+        invcont.update_item(id, item)
+        
+    def delete_item(self):
+        id = cli_id("item")
+        invcont.delete_item(id)
+        
+    def add_to_slot(self):
+        item_id = cli_id("item")
+        slot_id = cli_id("slot")
+        stock = cli_stock()
+        invcont.assign_slot(item_id, slot_id, stock)
+        
     def on_exit(self):...
     
 class Shelves(State):

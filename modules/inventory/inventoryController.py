@@ -9,12 +9,12 @@ class InventoryController:
     
     def delete_item(self, id: int):
      
-            with new_session() as session:
-                item = session.get(Item, id)
-                if item is None:
-                    raise ValueError("Item doesnt exist")
-                session.delete(item)
-                session.commit()
+        with new_session() as session:
+            item = session.get(Item, id)
+            if item is None:
+                raise ValueError("Item doesnt exist")
+            session.delete(item)
+            session.commit()
         
 
     def add_item(self, item_added: Item):
@@ -37,15 +37,13 @@ class InventoryController:
 
     def show_all_items(self):
         with new_session() as session:
-            items = session.get(Item)
-            for item in items:
-                return item
-            session.commit()
+            items = session.exec(select(Item)).all()
+            return items
+
             
     def show_item(self, id: int):
         with new_session() as session:
             item = session.get(Item, id)
-            session.commit()
             return item
         
     def assign_slot(self, item_id: int, slot_id: int, stock: int):
@@ -94,7 +92,6 @@ class InventoryController:
     def show_shelf(self, shelf_id: int):
         with new_session() as session:
             shelf = session.get(Shelf, shelf_id)
-            session.commit()
             return shelf
         
             
@@ -105,17 +102,12 @@ class InventoryController:
                 raise ValueError("Shelf does not exist")
             session.delete(shelf)
             session.commit()
-        
-            
                 
                                 
     def show_shelves(self):
         with new_session() as session:
-            shelves = session.get(Shelf)
-            for shelf in shelves:
-                return shelf
-            session.commit()
-    
+            shelves = session.exec(select(Shelf)).all()
+            return shelves
         
     def delete_slot(self, slot_id: int):
         with new_session() as session:
@@ -132,5 +124,4 @@ class InventoryController:
             slot = session.get(Slot, slot_id)
             if slot is None:
                 raise ValueError("Slot does not exist")
-            session.commit()
             return slot

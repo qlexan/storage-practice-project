@@ -1,11 +1,13 @@
-from sqlmodel import create_engine, Session
+from sqlmodel import create_engine, Session, SQLModel
 from config.env import DB_URL, SHELF_PATH
 
 
 
-engine = create_engine(DB_URL)
+engine = create_engine("sqlite:///db.sqlite")
 
 def new_session() -> Session:
     return Session(engine)
     
 
+def create_tables():
+    SQLModel.metadata.create_all(engine)
