@@ -6,9 +6,7 @@ from core.fsm.registry import registry
 def main():
     storage.setup()
     fsm = StateMachine(registry["Dashboard"])
-    while True:
-        if fsm.state.name == "Dashboard":
-            fsm.state.on_enter()
+
     
 if __name__ == "__main__":
     main()

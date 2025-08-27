@@ -1,6 +1,10 @@
 
 from .transitions import *
 from interfaces.cli import *
+from modules.inventory.inventoryController import InventoryController
+
+
+invcont = InventoryController()
 
 class State:
 
@@ -23,21 +27,6 @@ class Dashboard(State):
     def __init__(self):
         super().__init__("Dashboard")
     
-    @transition("Inventory")    
-    def inventory(self):
-        print("Entering inventory from Dashboard")
-        
-    @transition("Shelves")    
-    def shelves(self):
-        print("Entering Shelves from Dashboard")
-        
-    @transition("Slots")    
-    def slots(self):
-        print("Entering Slots from Dashboard")
-    
-    @transition("Items")    
-    def items(self):
-        print("Entering Items from Dashboard")
         
     def on_enter(self, fsm=None):
         print("In Dashboard")
@@ -55,7 +44,10 @@ class Inventory(State):
         
     def on_enter(self, fsm=None):
         print("In Inventory")
-        
+        if fsm:
+            items = invcont.show_all_items()
+            cli_show(items)
+            fsm.trigger("Dashboard")
     
     def on_exit(self):...
     

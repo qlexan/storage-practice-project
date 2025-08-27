@@ -50,6 +50,7 @@ def cli_show(item):
         print(f"*{k}* : '{v}'")
     time.sleep(2)
     print('\n ---------- \n')
+    input("Press enter to continue...")
     
 def cli_show_shelf():
     print('\n ---------- \n')   
