@@ -12,19 +12,19 @@ class State:
     def __init__(self, name: str):
         self.name = name
         self.transitions: dict = {}
-
         
         for attr_name in dir(self):
             method = getattr(self, attr_name)
-            if callable(method) and hasattr(method, "_transition_target"):
-                target = method._transition_target
+            if callable(method) and hasattr(method, "transition_target"):
+                target = method.transition_target
                 self.transitions[target] = method
     
     def on_enter(self, fsm=None):
         raise NotImplementedError
     
     def on_exit(self):
-        raise NotImplementedError    
+        raise NotImplementedError   
+     
 
 class Dashboard(State):
     
@@ -41,8 +41,10 @@ class Dashboard(State):
             fsm.trigger(state)
         
     def on_exit(self):...
+    
 
 class Inventory(State):
+    
     allowed_classes =  ["Dashboard", "Shelves", "Items"]
     
     def __init__(self):
